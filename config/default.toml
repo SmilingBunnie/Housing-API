@@ -1,0 +1,9 @@
+[App]
+port = 3000
+
+[App.database]
+mongo_url = "mongodb://admin:password@localhost:27018/?authMechanism=DEFAULT&authSource=admin"
+
+[App.logger]
+enabled = true
+level = "info"
