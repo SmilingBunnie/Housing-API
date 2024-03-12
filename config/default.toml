@@ -7,3 +7,7 @@ mongo_url = "mongodb://admin:password@localhost:27018/?authMechanism=DEFAULT&aut
 [App.logger]
 enabled = true
 level = "info"
+
+[App.token]
+jwt_secret = "Zr4u7x!A%D*G-JaNdRgUkXp2s5v8y/B?"
+jwt_lifetime = '30d'
