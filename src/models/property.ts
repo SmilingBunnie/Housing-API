@@ -11,6 +11,7 @@ export interface Property extends BaseModel {
     price: number
     userId: string
     yearBuilt: number
+    hasLivingRoom: boolean
     hasBasement: boolean
     hasParking: boolean
     hasHeating: boolean
@@ -58,6 +59,7 @@ const propertySchema = new mongoose.Schema(
             required: true
         },
         yearBuilt: Number,
+        hasLivingRoom: Boolean,
         hasBasement: Boolean,
         hasParking: Boolean,
         hasHeating: Boolean,
