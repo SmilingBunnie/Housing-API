@@ -73,4 +73,18 @@ export class PropertyController extends BaseController {
             return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
         }
     }
+
+    public async deleteProperty(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.user?.id) {
+                logger.error('Missing userId');
+                this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+            }
+            const id = req.params.id
+            const property = await this.propertyRepository.findOneAndDelete({id, userId: req.user?.id})
+        } catch (error) {
+            logger.error(error)
+            this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+        }
+    }
 }
