@@ -7,10 +7,10 @@ export type WithId<T> = { id: string } & T
 
 export interface BaseRepository<T> {
     create(data: T): Promise<WithId<T>>
-    findOne(options: FilterOptions): Promise<WithId<T> | undefined>
-    find(options: FilterOptions): Promise<WithId<T>[]>
-    findByIdAndUpdate(options: FilterOptions): Promise<WithId<T>>
-    findOneAndDelete(options: FilterOptions): Promise<void>
+    findOne(params: FilterOptions): Promise<WithId<T> | undefined>
+    find(params: FilterOptions): Promise<WithId<T>[]>
+    findByIdAndUpdate(params: FilterOptions, body: FilterOptions, options: FilterOptions): Promise<WithId<T>>
+    findOneAndDelete(params: FilterOptions): Promise<void>
     deleteAll(): Promise<void>
 }
 

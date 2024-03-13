@@ -4,7 +4,7 @@ import { BaseController } from ".";
 import { authMiddleware } from "../middleware/auth";
 import { PropertyRepository } from "../repositories";
 import { StatusCodes } from "http-status-codes";
-import logger from "src/logger";
+import logger from "../logger";
 
 @Controller('api/property')
 export class PropertyController extends BaseController {
@@ -28,11 +28,34 @@ export class PropertyController extends BaseController {
         }
     }
 
+    @Get('/:id')
+    @Middleware(authMiddleware)
     public async getSingleProperty(req: Request, res: Response): Promise<Response> {
         try {
+            if (!req.user?.id) {
+                logger.error('Missing userId');
+                return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+            }
             const id  = req.params.id
-            const property = await this.propertyRepository.findOne({ _id: id, userId: req.user?.id })
+            const property = await this.propertyRepository.findOne({ id, userId: req.user?.id })
             return res.status(StatusCodes.OK).send({ property })
+        } catch (error) {
+            logger.error(error)
+            return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+        }
+    }
+
+    @Post('/:id')
+    @Middleware(authMiddleware)
+    public async updateProperty(req: Request, res: Response): Promise<Response> {
+        try {
+            if (!req.user?.id) {
+                logger.error('Missing userId');
+                return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+            }
+            const id = req.params.id
+            const property = await this.propertyRepository.findByIdAndUpdate({id, userId: req.user?.id}, req.body, {new: true, runValidators: true })
+            return res.status(StatusCodes.CREATED).send({ property })
         } catch (error) {
             logger.error(error)
             return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
