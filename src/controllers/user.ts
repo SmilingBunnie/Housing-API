@@ -1,9 +1,8 @@
 import { Controller, Post, Get, Middleware } from "@overnightjs/core"
 import { Response, Request } from "express"
-import jwt from 'jsonwebtoken'
 import { BaseController } from '.'
 import { userRepository } from "../repositories"
-import { authMiddleware } from "../middleware/auth"
+
 
 @Controller('api/users')
 export class UserController extends BaseController {
