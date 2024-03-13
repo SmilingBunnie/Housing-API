@@ -9,6 +9,8 @@ export interface User extends BaseModel {
     name: string
     email: string
     password: string
+    comparePasswords(CandidatePassword: string): boolean
+    getToken(): string
 }
 
 export interface ExistingUser extends User {
@@ -54,7 +56,7 @@ const UserSchema = new mongoose.Schema({
             return !emailCount
         },
         `${CUSTOM_VALIDATION.DUPLICATED}!! email`
-    )
+    );
 
     UserSchema.pre<User & Document>('save', async function(): Promise<void> {
         if (!this.password || !this.isModified('password')) {
