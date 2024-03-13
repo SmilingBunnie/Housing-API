@@ -14,7 +14,7 @@ export function authMiddleware( req: Partial<Request>, res: Partial<Response>, n
     try {
         const decoded = jwt.verify(token as string, config.get('App.token.jwt_secret')) as JwtPayload
         const { id, name } = decoded
-        //req.user = { id, name }
+        req.user = { id, name }
         next()
     } catch (error) {
         if (error instanceof Error) {

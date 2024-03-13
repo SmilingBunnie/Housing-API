@@ -18,7 +18,7 @@ export interface PropertyRepository extends BaseRepository<Property> {
     findAllPropertiesForUser(userId: string): Promise<WithId<Property>[]>
 }
 
-export interface userRepository extends BaseRepository<User> {
+export interface UserRepository extends BaseRepository<User> {
     findOneById(id: string): Promise<WithId<User> | undefined>
     findOneByEmail(email: string): Promise<WithId<User> | undefined>
 }
