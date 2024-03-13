@@ -61,4 +61,16 @@ export class PropertyController extends BaseController {
             return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
         }
     }
+
+    @Post('')
+    @Middleware(authMiddleware)
+    public async createProperty(req: Request, res: Response): Promise<Response> {
+        try {
+            const property = await this.propertyRepository.create(req.body)
+            return res.status(StatusCodes.CREATED).send({property})
+        } catch (error) {
+            logger.error(error)
+            return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+        }
+    }
 }
