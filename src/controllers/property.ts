@@ -20,8 +20,19 @@ export class PropertyController extends BaseController {
                 logger.error('Missing userId');
                 return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
             }
-            const AllProperty = await this.propertyRepository.find({userId: req.user?.id})
-            return res.status(StatusCodes.OK).send({AllProperty, count: AllProperty.length})
+            const allProperty = await this.propertyRepository.find({userId: req.user?.id})
+            return res.status(StatusCodes.OK).send({allProperty, count: allProperty.length})
+        } catch (error) {
+            logger.error(error)
+            return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+        }
+    }
+
+    public async getSingleProperty(req: Request, res: Response): Promise<Response> {
+        try {
+            const id  = req.params.id
+            const property = await this.propertyRepository.findOne({ _id: id, userId: req.user?.id })
+            return res.status(StatusCodes.OK).send({ property })
         } catch (error) {
             logger.error(error)
             return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
