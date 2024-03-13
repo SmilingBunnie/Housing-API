@@ -1,12 +1,12 @@
 import { Controller, Post, Get, Middleware } from "@overnightjs/core"
 import { Response, Request } from "express"
 import { BaseController } from '.'
-import { userRepository } from "../repositories"
+import { UserRepository } from "../repositories"
 
 
 @Controller('api/users')
 export class UserController extends BaseController {
-    constructor(private userRepository: userRepository) {
+    constructor(private userRepository: UserRepository) {
         super()
     }
 
