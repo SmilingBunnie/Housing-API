@@ -1,6 +1,6 @@
 import { Response } from "express";
 import logger from "../logger";
-import { DatabaseError, DatabaseUnknownClientError, DatabaseValidatorError } from "../repositories/repository";
+import { DatabaseError, DatabaseUnknownClientError, DatabaseValidationError } from "../repositories/repository";
 import ApiError, { APIError } from "../utils/errors/api-error";
 
 interface HandleClientErrorsRes {
@@ -11,7 +11,7 @@ interface HandleClientErrorsRes {
 export abstract class BaseController {
     protected sendCreateUpdateErrorResponse(res: Response, error: unknown): void {
         if (
-            error instanceof DatabaseValidatorError || error instanceof DatabaseUnknownClientError
+            error instanceof DatabaseValidationError || error instanceof DatabaseUnknownClientError
         ) {
             const clientErrors = this.handleClientErrors(error)
             logger.error(JSON.stringify(error))
@@ -25,7 +25,7 @@ export abstract class BaseController {
     }
 
     private handleClientErrors(error: DatabaseError): HandleClientErrorsRes {
-        if (error instanceof DatabaseValidatorError) {
+        if (error instanceof DatabaseValidationError) {
             return { code: 409, error: error.message }
         }
         return { code: 400, error: error.message }

@@ -6,7 +6,7 @@ export class DatabaseError extends Error {
     }
 }
 
-export class DatabaseValidatorError extends DatabaseError {}
+export class DatabaseValidationError extends DatabaseError {}
 
 export class DatabaseUnknownClientError extends DatabaseError {}
 
