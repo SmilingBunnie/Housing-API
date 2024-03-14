@@ -7,6 +7,11 @@ import morgan from 'morgan'
 import { Application } from 'express-serve-static-core'
 import * as database from './database'
 import logger from './logger'
+import { PropertyController } from './controllers/property'
+import { UserController } from './controllers/user'
+import { UserMongoDBRepository } from './repositories/userMongoDBRepository'
+import { PropertyMongoDBRepository } from './repositories/propertyMongoDBRepository'
+import { apiErrorValidator } from './middleware/api-error-validator'
 
 export class ServerSetup extends Server{
     private server?: http.Server
@@ -18,9 +23,10 @@ export class ServerSetup extends Server{
     }
 
     public async initializeConnections(): Promise<void> {
-        //this.initializeMiddleware()
+        this.initializeMiddleware()
         await this.databaseSetup()
-        //this.InitializeErrorHandler()
+        this.initializeControllers()
+        this.InitializeErrorHandler()
     }
 
     private initializeMiddleware(): void {
@@ -31,7 +37,7 @@ export class ServerSetup extends Server{
     }
 
     private InitializeErrorHandler(): void {
-        this.app.use()
+        this.app.use(apiErrorValidator)
     }
 
     public getApp(): Application {
@@ -60,5 +66,11 @@ export class ServerSetup extends Server{
         this.server = this.app.listen(this.port, () => {
             logger.info('Server listening on port' + this.port)
         })
+    }
+
+    private initializeControllers(): void {
+        const userController = new UserController(new UserMongoDBRepository());
+        const propertyController = new PropertyController(new PropertyMongoDBRepository())
+        this.addControllers([userController, propertyController])
     }
 }
