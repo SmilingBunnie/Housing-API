@@ -80,6 +80,6 @@ const UserSchema = new mongoose.Schema({
         return isMatch
     }
 
-    const User = mongoose.model<User>('User', UserSchema)
+    export const User = mongoose.model<User>('User', UserSchema)
 
-    export default User
+
