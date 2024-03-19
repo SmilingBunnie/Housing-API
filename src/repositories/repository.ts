@@ -14,9 +14,10 @@ export class DatabaseInternalError extends DatabaseError {}
 
 export abstract class Repository<T> implements BaseRepository<T> {
     public abstract create(data: T): Promise<WithId<T>>
-    public abstract findOne(options: FilterOptions): Promise<WithId<T> | undefined>
+    public abstract findById(options: FilterOptions): Promise<WithId<T> | undefined>
     public abstract find(options: FilterOptions): Promise<WithId<T>[]>
     public abstract deleteAll(): Promise<void>
-    public abstract findByIdAndUpdate(options: FilterOptions): Promise<WithId<T>>
+    public abstract findByIdAndUpdate(params: FilterOptions, body: FilterOptions, options: FilterOptions): Promise<WithId<T>>
     public abstract findOneAndDelete(options: FilterOptions): Promise<void>
+    public abstract findOne(options: FilterOptions): Promise<WithId<T> | undefined>
 }

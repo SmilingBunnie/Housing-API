@@ -10,7 +10,7 @@ implements UserRepository {
     }
 
     async findOneById(id: string) {
-        return this.findOne({_id: id})
+        return await this.findOne({_id: id})
     }
 
     async findOneByEmail(email: string) {

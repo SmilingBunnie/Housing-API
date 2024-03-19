@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 import mongoose, { Document } from 'mongoose'
-import jwt from 'jsonwebtoken'
-import config from 'config'
+
 import logger from '../logger'
 import { BaseModel } from '.'
 
@@ -9,8 +8,6 @@ export interface User extends BaseModel {
     name: string
     email: string
     password: string
-    comparePasswords(CandidatePassword: string): boolean
-    getToken(): string
 }
 
 export interface ExistingUser extends User {
@@ -52,7 +49,8 @@ const UserSchema = new mongoose.Schema({
 
     UserSchema.path('email').validate(
         async (email: string) => {
-            const emailCount = mongoose.models.User.countDocuments({ email })
+            const emailCount = await mongoose.models.User.countDocuments({ email })
+            emailCount && logger.info(`${CUSTOM_VALIDATION.DUPLICATED}!! email`)
             return !emailCount
         },
         `${CUSTOM_VALIDATION.DUPLICATED}!! email`
@@ -70,15 +68,6 @@ const UserSchema = new mongoose.Schema({
         }
     })
 
-    UserSchema.methods.getToken = function() {
-        const token = jwt.sign({id: this._id, name: this.name}, config.get('App.token.jwt_secret') as string, {expiresIn: config.get('App.token.jwt_lifetime')})
-        return token
-    }
-
-    UserSchema.methods.comparePasswords = async function(candidatePassword: string) {
-        const isMatch = await bcrypt.compare(candidatePassword, this.password)
-        return isMatch
-    }
 
     export const User = mongoose.model<User>('User', UserSchema)
 

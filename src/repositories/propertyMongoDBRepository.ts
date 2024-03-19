@@ -12,4 +12,8 @@ implements PropertyRepository {
     async findAllPropertiesForUser(userId: string) {
         return await this.find({userId})
     }
+
+    async findOneById(id: string) {
+        return await this.findOne({_id: id})
+    }
 }

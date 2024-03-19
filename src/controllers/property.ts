@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Middleware } from "@overnightjs/core";
+import { Controller, Post, Get, Delete, Put, Patch, Middleware } from "@overnightjs/core";
 import { Response, Request } from "express";
 import { BaseController } from ".";
 import { authMiddleware } from "../middleware/auth";
@@ -28,7 +28,7 @@ export class PropertyController extends BaseController {
         }
     }
 
-    @Get('/:id')
+    @Get(':id')
     @Middleware(authMiddleware)
     public async getSingleProperty(req: Request, res: Response): Promise<Response> {
         try {
@@ -37,7 +37,7 @@ export class PropertyController extends BaseController {
                 return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
             }
             const id  = req.params.id
-            const property = await this.propertyRepository.findOne({ id, userId: req.user?.id })
+            const property = await this.propertyRepository.findOneById(id)
             return res.status(StatusCodes.OK).send({ property })
         } catch (error) {
             logger.error(error)
@@ -45,7 +45,7 @@ export class PropertyController extends BaseController {
         }
     }
 
-    @Post('/:id')
+    @Patch(':id')
     @Middleware(authMiddleware)
     public async updateProperty(req: Request, res: Response): Promise<Response> {
         try {
@@ -54,7 +54,7 @@ export class PropertyController extends BaseController {
                 return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
             }
             const id = req.params.id
-            const property = await this.propertyRepository.findByIdAndUpdate({id, userId: req.user?.id}, req.body, {new: true, runValidators: true })
+            const property = await this.propertyRepository.findByIdAndUpdate({_id: id}, req.body, {new: true, runValidators: true })
             return res.status(StatusCodes.CREATED).send({ property })
         } catch (error) {
             logger.error(error)
@@ -66,7 +66,7 @@ export class PropertyController extends BaseController {
     @Middleware(authMiddleware)
     public async createProperty(req: Request, res: Response): Promise<Response> {
         try {
-            const property = await this.propertyRepository.create(req.body)
+            const property = await this.propertyRepository.create({ ...req.body, userId: req.user?.id })
             return res.status(StatusCodes.CREATED).send({property})
         } catch (error) {
             logger.error(error)
@@ -74,17 +74,20 @@ export class PropertyController extends BaseController {
         }
     }
 
-    public async deleteProperty(req: Request, res: Response): Promise<void> {
+    @Delete(':id')
+    @Middleware(authMiddleware)
+    public async deleteProperty(req: Request, res: Response): Promise<Response> {
         try {
             if (!req.user?.id) {
                 logger.error('Missing userId');
                 this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
             }
             const id = req.params.id
-            const property = await this.propertyRepository.findOneAndDelete({id, userId: req.user?.id})
+            await this.propertyRepository.findOneAndDelete({id, userId: req.user?.id})
+            return res.status(StatusCodes.OK).send('Deleted')
         } catch (error) {
             logger.error(error)
-            this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
+            return this.sendErrorResponse(res, { code: 500, message: 'Something went wrong' })
         }
     }
 }

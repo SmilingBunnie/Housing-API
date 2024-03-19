@@ -1,6 +1,6 @@
 import { Response } from "express";
 import logger from "../logger";
-import { DatabaseError, DatabaseUnknownClientError, DatabaseValidationError } from "../repositories/repository";
+import { DatabaseError, DatabaseUnknownClientError, DatabaseValidationError, DatabaseInternalError } from "../repositories/repository";
 import ApiError, { APIError } from "../utils/errors/api-error";
 
 interface HandleClientErrorsRes {
@@ -14,13 +14,16 @@ export abstract class BaseController {
             error instanceof DatabaseValidationError || error instanceof DatabaseUnknownClientError
         ) {
             const clientErrors = this.handleClientErrors(error)
-            logger.error(JSON.stringify(error))
+            logger.warn(`error: ${error.message}`)
             res.status(clientErrors.code).send(
                 ApiError.format({code: clientErrors.code, message: clientErrors.error})
             )
+        }else if (error instanceof DatabaseInternalError) {
+            logger.error(`error: ${error.message}`)
+            res.status(500).send(ApiError.format({code: 500, message: error.message}))
         } else {
-            logger.error(JSON.stringify(error))
-            res.status(500).send(ApiError.format({code: 500, message: 'Some thing went wrong!'}))
+            logger.error(`error: Something went wrong`)
+            res.status(500).send(ApiError.format({code: 500, message: 'Something went wrong!'}))
         }
     }
 

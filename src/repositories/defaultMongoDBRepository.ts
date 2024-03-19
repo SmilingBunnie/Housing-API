@@ -1,6 +1,6 @@
 import logger from '../logger'
 import { BaseModel } from '../models'
-import { CUSTOM_VALIDATION } from 'src/models/user'
+import { CUSTOM_VALIDATION } from '../models/user'
 import { Error, Model } from 'mongoose'
 import { FilterOptions, WithId } from '.'
 import {
@@ -26,7 +26,6 @@ export abstract class DefaultMongoDBRepository<T extends BaseModel> extends Repo
             }
             throw new DatabaseUnknownClientError(error.message)
         }
-        logger.warn('Database error', error)
         throw new DatabaseInternalError('Something unexpected happened to the database')
     }
 
@@ -35,6 +34,15 @@ export abstract class DefaultMongoDBRepository<T extends BaseModel> extends Repo
             const model = new this.model(data)
             const createdData = await model.save();
             return createdData.toJSON<WithId<T>>() as Promise<WithId<T>>;
+        } catch (error) {
+            this.handleError(error)
+        }
+    }
+
+    async findById(params: FilterOptions) {
+        try {
+            const data = await this.model.findById(params)
+            return data?.toJSON<WithId<T>>() as Promise<WithId<T>>
         } catch (error) {
             this.handleError(error)
         }
@@ -51,7 +59,7 @@ export abstract class DefaultMongoDBRepository<T extends BaseModel> extends Repo
     async find(options: FilterOptions) {
         try {
             const data =  await this.model.find(options)
-            return (data.map((d) => d.toJSON<WithId<T>>()) as unknown) as Promise<WithId<T>[]>
+            return (data.map((d) => d.toJSON<WithId<T>>())) as unknown as Promise<WithId<T>[]>
         } catch (error) {
             this.handleError(error)
         }
@@ -61,9 +69,9 @@ export abstract class DefaultMongoDBRepository<T extends BaseModel> extends Repo
         await this.model.deleteMany({})
     }
 
-    async findByIdAndUpdate(params: FilterOptions) {
+    async findByIdAndUpdate(params: FilterOptions, body: FilterOptions, options: FilterOptions) {
         try {
-            const data = await this.model.findByIdAndUpdate(params)
+            const data = await this.model.findByIdAndUpdate(params, body, options)
             return data?.toJSON<WithId<T>>() as Promise<WithId<T>>
         } catch (error) {
             this.handleError(error)

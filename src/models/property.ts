@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { BaseModel } from '.'
+import { User } from './user'
 
 export interface Property extends BaseModel {
     location: string
