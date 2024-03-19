@@ -1,0 +1,383 @@
+openapi: 3.0.0
+info:
+  title: Housing-API
+  contact: {}
+  version: '1.0'
+servers:
+- url: http://enterurlhere.com
+  variables: {}
+paths:
+  /users/register:
+    post:
+      tags:
+      - Auth
+      summary: Register user
+      operationId: Registeruser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisteruserRequest'
+              - example:
+                  name: Smilling Bunny
+                  email: bunnysmiles@gmail.com
+                  password: password
+            example:
+              name: Smilling Bunny
+              email: bunnysmiles@gmail.com
+              password: password
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /users/login:
+    post:
+      tags:
+      - Auth
+      summary: Login user
+      operationId: Loginuser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginuserRequest'
+              - example:
+                  email: bunnysmiles@gmail.com
+                  password: password
+            example:
+              email: bunnysmiles@gmail.com
+              password: password
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /property:
+    post:
+      tags:
+      - Property
+      summary: Create property
+      operationId: Createproperty
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreatepropertyRequest'
+              - example:
+                  location: Mutundwe
+                  longitude: 546473282
+                  latitude: 3647382
+                  type: self contained
+                  beds: 2
+                  baths: 2
+                  price: 400000
+                  yearBuilt: 2021
+                  hasLivingRoom: true
+                  hasBasement: false
+                  hasParking: false
+                  hasHeating: true
+                  hasAC: true
+            example:
+              location: Mutundwe
+              longitude: 546473282
+              latitude: 3647382
+              type: self contained
+              beds: 2
+              baths: 2
+              price: 400000
+              yearBuilt: 2021
+              hasLivingRoom: true
+              hasBasement: false
+              hasParking: false
+              hasHeating: true
+              hasAC: true
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    get:
+      tags:
+      - Property
+      summary: Get user properties
+      operationId: Getuserproperties
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /property/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The property ID
+    delete:
+      tags:
+      - Property
+      summary: Delete property
+      operationId: Deleteproperty
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Property
+      summary: Update property
+      operationId: Updateproperty
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdatepropertyRequest'
+              - example:
+                  location: Matugga
+                  longitude: 546473282
+                  latitude: 3647382
+                  type: self contained
+                  beds: 4
+                  baths: 4
+                  price: 800000
+                  yearBuilt: 2021
+                  hasLivingRoom: true
+                  hasBasement: false
+                  hasParking: false
+                  hasHeating: true
+                  hasAC: true
+            example:
+              location: Matugga
+              longitude: 546473282
+              latitude: 3647382
+              type: self contained
+              beds: 4
+              baths: 4
+              price: 800000
+              yearBuilt: 2021
+              hasLivingRoom: true
+              hasBasement: false
+              hasParking: false
+              hasHeating: true
+              hasAC: true
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    get:
+      tags:
+      - Property
+      summary: Get single property
+      operationId: Getsingleproperty
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+components:
+  schemas:
+    RegisteruserRequest:
+      title: RegisteruserRequest
+      required:
+      - name
+      - email
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: Smilling Bunny
+        email: bunnysmiles@gmail.com
+        password: password
+    LoginuserRequest:
+      title: LoginuserRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: bunnysmiles@gmail.com
+        password: password
+    CreatepropertyRequest:
+      title: CreatepropertyRequest
+      required:
+      - location
+      - longitude
+      - latitude
+      - type
+      - beds
+      - baths
+      - price
+      - yearBuilt
+      - hasLivingRoom
+      - hasBasement
+      - hasParking
+      - hasHeating
+      - hasAC
+      type: object
+      properties:
+        location:
+          type: string
+        longitude:
+          type: integer
+          format: int32
+        latitude:
+          type: integer
+          format: int32
+        type:
+          type: string
+        beds:
+          type: integer
+          format: int32
+        baths:
+          type: integer
+          format: int32
+        price:
+          type: integer
+          format: int32
+        yearBuilt:
+          type: integer
+          format: int32
+        hasLivingRoom:
+          type: boolean
+        hasBasement:
+          type: boolean
+        hasParking:
+          type: boolean
+        hasHeating:
+          type: boolean
+        hasAC:
+          type: boolean
+      example:
+        location: Mutundwe
+        longitude: 546473282
+        latitude: 3647382
+        type: self contained
+        beds: 2
+        baths: 2
+        price: 400000
+        yearBuilt: 2021
+        hasLivingRoom: true
+        hasBasement: false
+        hasParking: false
+        hasHeating: true
+        hasAC: true
+    UpdatepropertyRequest:
+      title: UpdatepropertyRequest
+      required:
+      - location
+      - longitude
+      - latitude
+      - type
+      - beds
+      - baths
+      - price
+      - yearBuilt
+      - hasLivingRoom
+      - hasBasement
+      - hasParking
+      - hasHeating
+      - hasAC
+      type: object
+      properties:
+        location:
+          type: string
+        longitude:
+          type: integer
+          format: int32
+        latitude:
+          type: integer
+          format: int32
+        type:
+          type: string
+        beds:
+          type: integer
+          format: int32
+        baths:
+          type: integer
+          format: int32
+        price:
+          type: integer
+          format: int32
+        yearBuilt:
+          type: integer
+          format: int32
+        hasLivingRoom:
+          type: boolean
+        hasBasement:
+          type: boolean
+        hasParking:
+          type: boolean
+        hasHeating:
+          type: boolean
+        hasAC:
+          type: boolean
+      example:
+        location: Matugga
+        longitude: 546473282
+        latitude: 3647382
+        type: self contained
+        beds: 4
+        baths: 4
+        price: 800000
+        yearBuilt: 2021
+        hasLivingRoom: true
+        hasBasement: false
+        hasParking: false
+        hasHeating: true
+        hasAC: true
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: Auth
+  description: ''
+- name: Property
+  description: ''

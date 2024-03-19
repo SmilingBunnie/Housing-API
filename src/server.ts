@@ -12,6 +12,8 @@ import { UserController } from './controllers/user'
 import { UserMongoDBRepository } from './repositories/userMongoDBRepository'
 import { PropertyMongoDBRepository } from './repositories/propertyMongoDBRepository'
 import { apiErrorValidator } from './middleware/api-error-validator'
+import swagger from 'swagger-ui-express'
+import yaml from 'yamljs'
 
 export class ServerSetup extends Server{
     private server?: http.Server
@@ -24,6 +26,7 @@ export class ServerSetup extends Server{
 
     public async initializeConnections(): Promise<void> {
         this.initializeMiddleware()
+        await this.setupDocs()
         await this.databaseSetup()
         this.initializeControllers()
         this.InitializeErrorHandler()
@@ -34,6 +37,11 @@ export class ServerSetup extends Server{
         this.app.use(helmet())
         this.app.use(cors({origin: '*'}))
         this.app.use(morgan('dev'))
+    }
+
+    private async setupDocs() {
+        const swaggerDocument = yaml.load('./swagger.yaml')
+        this.app.use('/api-docs', swagger.serve, swagger.setup(swaggerDocument))
     }
 
     private InitializeErrorHandler(): void {
